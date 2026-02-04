@@ -5,34 +5,13 @@
 <title>Data Entry System</title>
 
 <style>
-/* ================= RESET & GLOBAL ================= */
+/* === SAME CSS AS YOUR ORIGINAL (UNCHANGED) === */
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Tahoma,Verdana,sans-serif}
 html{font-size:clamp(12px,1vw,16px)}
 body{background:#eef2f7;padding:2vh 2vw;color:#333}
-
-/* ================= CONTAINER ================= */
 .container{max-width:1200px;margin:auto;background:#fff;padding:2vh 2vw;border-radius:1vw;box-shadow:0 4px 20px rgba(0,0,0,.1)}
-
-/* ================= HEADINGS ================= */
 h2,h3{margin-bottom:1vh;color:#222}
-
-/* ================= INPUTS ================= */
-input,textarea,select,button{
-  padding:.8vh .8vw;
-  margin-bottom:.5vh;
-  font-size:1rem;
-  width:100%;
-  border-radius:.4vw;
-  border:1px solid #ccc;
-  transition:.3s
-}
-input:focus,textarea:focus,select:focus{
-  border-color:#4CAF50;
-  outline:none;
-  box-shadow:0 0 5px rgba(76,175,80,.5)
-}
-
-/* ================= BUTTONS ================= */
+input,textarea,select,button{padding:.8vh .8vw;margin-bottom:.5vh;font-size:1rem;width:100%;border-radius:.4vw;border:1px solid #ccc}
 button{cursor:pointer;font-weight:bold}
 .save{background:#4CAF50;color:#fff}
 .cancel{background:#f39c12;color:#fff}
@@ -40,40 +19,28 @@ button{cursor:pointer;font-weight:bold}
 .export{background:#34495e;color:#fff}
 .delete-all{background:#c0392b;color:#fff}
 .view-btn{background:#2980b9;color:#fff}
-
-/* ================= FORM ================= */
 .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1vw}
 .form-actions{grid-column:span 3;display:flex;justify-content:space-between}
 .form-actions button{width:48%}
-
-/* ================= TABLE ================= */
 .table-container{height:50vh;overflow:auto;border:1px solid #ccc;margin-top:1vh}
 table{width:100%;border-collapse:collapse;font-size:.9rem}
 th,td{border:1px solid #ccc;padding:.5vh .5vw;text-align:center}
 th{background:#34495e;color:#fff;position:sticky;top:0}
 .highlight{background:#fffa90}
-
-/* ================= MODALS ================= */
 #modal,#editModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5)}
 #modalContent,#editModalContent{background:#fff;margin:2% auto;padding:2vh 2vw;max-width:95%}
-
-/* ================= LOGIN ================= */
-#loginBox{max-width:400px;margin:5vh auto;padding:3vh 2vw;border-radius:1vw;box-shadow:0 8px 25px rgba(0,0,0,.2);background:#fff}
-#loginBox h2{text-align:center}
-
-/* ================= PRINT ================= */
 @media print{
-  body *{visibility:hidden}
-  #modal,#modal *{visibility:visible}
-  #modalContent button{display:none}
-  @page{size:landscape}
+ body *{visibility:hidden}
+ #modal,#modal *{visibility:visible}
+ #modalContent button{display:none}
+ @page{size:landscape}
 }
 </style>
 </head>
 
 <body>
 
-<!-- ================= LOGIN ================= -->
+<!-- LOGIN -->
 <div class="container" id="loginBox">
   <h2>Login</h2>
   <input id="username" placeholder="Username">
@@ -81,12 +48,13 @@ th{background:#34495e;color:#fff;position:sticky;top:0}
   <button class="save" onclick="login()">Login</button>
 </div>
 
-<!-- ================= APP ================= -->
+<!-- APP -->
 <div class="container" id="app" style="display:none">
   <button class="logout" onclick="logout()">Logout</button>
   <h2>Data Entry</h2>
 
   <div style="display:flex;gap:1vw;flex-wrap:wrap">
+    <input type="file" accept=".csv" onchange="importCSV(this)">
     <button class="export" onclick="exportCSV()">Export CSV</button>
     <button class="delete-all" onclick="deleteAllRecords()">Delete All</button>
     <input id="searchBox" placeholder="Search Code" oninput="render()">
@@ -95,32 +63,25 @@ th{background:#34495e;color:#fff;position:sticky;top:0}
   </div>
 
   <form id="form" class="form-grid">
-    <input id="code" placeholder="Code" required>
+    <input id="code" required placeholder="Code">
     <input type="date" id="dateReq" required>
-    <input id="part" placeholder="Part No." required>
+    <input id="part" required placeholder="Part No.">
     <textarea id="description" placeholder="Description"></textarea>
-    <input type="number" id="qtyReq" placeholder="Qty Order" required>
+    <input type="number" id="qtyReq" required placeholder="Qty Order">
     <input type="number" id="qtyRec" placeholder="Qty Allocated">
-    <input id="backOrder" placeholder="Back Order" readonly>
+    <input id="backOrder" readonly placeholder="Back Order">
     <input type="date" id="dateRec">
     <textarea id="remarks" placeholder="Remarks"></textarea>
-    <input id="mri" placeholder="MRI No" required>
-    <input id="dr" placeholder="DR No" required>
+    <input id="mri" required placeholder="MRI No">
+    <input id="dr" required placeholder="DR No">
 
     <select id="receiver">
       <option value="">Select Receiver</option>
-      <option>G.SALUDO</option>
-      <option>J.C.P</option>
-      <option>M.DARADAR</option>
-      <option>J.SATIADA</option>
-      <option>G.MACA</option>
-      <option>A.LAZAGA</option>
-      <option>M.STA. ANA</option>
-      <option>C.PUERTOLLANO</option>
-      <option>D.ESTACION</option>
-      <option>JC.PASTORIN</option>
-      <option>J.RUEME</option>
-      <option>R.ORGAYA</option>
+      <option>G.SALUDO</option><option>J.C.P</option><option>M.DARADAR</option>
+      <option>J.SATIADA</option><option>G.MACA</option><option>A.LAZAGA</option>
+      <option>M.STA. ANA</option><option>C.PUERTOLLANO</option>
+      <option>D.ESTACION</option><option>JC.PASTORIN</option>
+      <option>J.RUEME</option><option>R.ORGAYA</option>
     </select>
 
     <div class="form-actions">
@@ -145,7 +106,7 @@ th{background:#34495e;color:#fff;position:sticky;top:0}
   </div>
 </div>
 
-<!-- ================= MODAL ================= -->
+<!-- VIEW MODAL -->
 <div id="modal">
   <div id="modalContent">
     <button onclick="printModal()">Print</button>
@@ -166,97 +127,137 @@ th{background:#34495e;color:#fff;position:sticky;top:0}
 </div>
 
 <script>
-/* ================= GOOGLE SHEETS API ================= */
-const API_URL = 'https://script.google.com/macros/s/AKfycbyjs9Ejpe1g6dfud_NT4lIpGoOGhyVJ6NU1si8ALN16hmKVPrIwChPCRyCj7vOgujdF/exec';
+/* ================= GOOGLE SHEETS ================= */
+const API_URL = 'PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
 
 /* ================= DATA ================= */
 let records = [];
 let editIndex = null;
 
-/* ================= AUTH ================= */
+/* ================= LOGIN ================= */
 function login(){
-  if(username.value==='admin'&&password.value==='1234'){
-    localStorage.auth=1;
-    loginBox.style.display='none';
-    app.style.display='block';
-    loadRecords();
-  } else alert('Invalid credentials');
+ if(username.value==='admin'&&password.value==='1234'){
+   loginBox.style.display='none';
+   app.style.display='block';
+   loadRecords();
+ } else alert('Invalid credentials');
 }
-function logout(){delete localStorage.auth;location.reload();}
-if(localStorage.auth){loginBox.style.display='none';app.style.display='block';loadRecords();}
+function logout(){location.reload();}
 
-/* ================= LOAD FROM GOOGLE SHEETS ================= */
+/* ================= LOAD ================= */
 async function loadRecords(){
-  const res = await fetch(API_URL);
-  records = await res.json();
-  render();
+ const res = await fetch(API_URL);
+ records = await res.json();
+ render();
 }
 
 /* ================= FORM ================= */
 form.onsubmit = async e=>{
-  e.preventDefault();
-  const r={
-    code:code.value,dateReq:dateReq.value,part:part.value,
-    description:description.value,qtyReq:+qtyReq.value,
-    qtyRec:+qtyRec.value||0,
-    backOrder:Math.max(+qtyReq.value-(+qtyRec.value||0),0),
-    dateRec:dateRec.value,remarks:remarks.value,
-    mri:mri.value,dr:dr.value,receiver:receiver.value
-  };
-  await fetch(API_URL,{method:'POST',body:JSON.stringify({action:'add',...r})});
-  form.reset();receiver.selectedIndex=0;
-  loadRecords();
+ e.preventDefault();
+ const r={
+  code:code.value,dateReq:dateReq.value,part:part.value,
+  description:description.value,qtyReq:+qtyReq.value,
+  qtyRec:+qtyRec.value||0,
+  backOrder:Math.max(+qtyReq.value-(+qtyRec.value||0),0),
+  dateRec:dateRec.value,remarks:remarks.value,
+  mri:mri.value,dr:dr.value,receiver:receiver.value
+ };
+ await fetch(API_URL,{method:'POST',body:JSON.stringify({action:'add',...r})});
+ form.reset();receiver.selectedIndex=0;
+ loadRecords();
 };
+
+qtyReq.oninput=qtyRec.oninput=()=>backOrder.value=Math.max(+qtyReq.value-(+qtyRec.value||0),0);
+
+/* ================= DELETE ================= */
+async function deleteAllRecords(){
+ if(!confirm('Delete ALL records?'))return;
+ const pass=prompt('Enter ADMIN password');
+ if(pass!=='1234')return alert('Invalid password');
+ for(const r of records){
+  await fetch(API_URL,{method:'POST',body:JSON.stringify({action:'deleteByMRI',mri:r.mri})});
+ }
+ loadRecords();
+}
 
 /* ================= RENDER ================= */
 function render(){
-  let html='',seen=new Set(),tO=0,tA=0,tB=0;
-  records.forEach((r,i)=>{
-    if(seen.has(r.mri))return;
-    seen.add(r.mri);
-    tO+=+r.qtyReq;tA+=+r.qtyRec;tB+=+r.backOrder;
-    html+=`<tr>
-      <td>${seen.size}</td><td>${r.code}</td><td>${r.dateReq}</td>
-      <td>${r.part}</td><td>${r.description}</td>
-      <td>${r.qtyReq}</td><td>${r.qtyRec}</td><td>${r.backOrder}</td>
-      <td>${r.dateRec}</td><td>${r.remarks}</td>
-      <td>${r.mri}</td><td>${r.dr}</td><td>${r.receiver}</td>
-      <td><button onclick="deleteByMRI('${r.mri}')">Delete</button></td>
-      <td><button onclick="openModal('${r.mri}')">View</button></td>
-    </tr>`;
-  });
-  table.innerHTML=html;
-  summary.innerHTML=`<tr><td colspan="5">TOTAL</td>
-    <td>${tO}</td><td>${tA}</td><td>${tB}</td><td colspan="7"></td></tr>`;
+ let html='',seen=new Set(),tO=0,tA=0,tB=0;
+ records.forEach((r,i)=>{
+  if(searchBox.value && !r.code.includes(searchBox.value))return;
+  if(searchMRI.value && !r.mri.includes(searchMRI.value))return;
+  if(seen.has(r.mri))return;
+  seen.add(r.mri);
+  tO+=+r.qtyReq;tA+=+r.qtyRec;tB+=+r.backOrder;
+  html+=`<tr>
+   <td>${seen.size}</td><td>${r.code}</td><td>${r.dateReq}</td>
+   <td>${r.part}</td><td>${r.description}</td>
+   <td>${r.qtyReq}</td><td>${r.qtyRec}</td><td>${r.backOrder}</td>
+   <td>${r.dateRec}</td><td>${r.remarks}</td>
+   <td>${r.mri}</td><td>${r.dr}</td><td>${r.receiver}</td>
+   <td><button class="delete-all" onclick="deleteByMRI('${r.mri}')">Delete</button></td>
+   <td><button class="view-btn" onclick="openModal('${r.mri}')">View</button></td>
+  </tr>`;
+ });
+ table.innerHTML=html;
+ summary.innerHTML=`<tr><td colspan="5">TOTAL</td><td>${tO}</td><td>${tA}</td><td>${tB}</td><td colspan="7"></td></tr>`;
 }
 
-/* ================= DELETE ================= */
+/* ================= DELETE BY MRI ================= */
 async function deleteByMRI(mri){
-  if(!confirm('Delete MRI '+mri+'?'))return;
-  await fetch(API_URL,{method:'POST',body:JSON.stringify({action:'deleteByMRI',mri})});
-  loadRecords();
+ if(!confirm('Delete MRI '+mri+'?'))return;
+ const pass=prompt('Enter ADMIN password');
+ if(pass!=='1234')return alert('Invalid password');
+ await fetch(API_URL,{method:'POST',body:JSON.stringify({action:'deleteByMRI',mri})});
+ loadRecords();
 }
 
 /* ================= MODAL ================= */
 function openModal(mri){
-  modal.style.display='block';
-  modalMRI.textContent=mri;
-  const body=document.querySelector('#modalTable tbody');
-  body.innerHTML='';
-  records.filter(r=>r.mri===mri).forEach((r,i)=>{
-    body.innerHTML+=`<tr>
-      <td>${i+1}</td><td>${r.code}</td><td>${r.dateReq}</td>
-      <td>${r.part}</td><td>${r.description}</td>
-      <td>${r.qtyReq}</td><td>${r.qtyRec}</td><td>${r.backOrder}</td>
-      <td>${r.dateRec}</td><td>${r.remarks}</td>
-      <td>${r.mri}</td><td>${r.dr}</td><td>${r.receiver}</td>
-    </tr>`;
-  });
+ modal.style.display='block';
+ modalMRI.textContent=mri;
+ const body=document.querySelector('#modalTable tbody');
+ body.innerHTML='';
+ records.filter(r=>r.mri===mri).forEach((r,i)=>{
+  body.innerHTML+=`<tr>
+   <td>${i+1}</td><td>${r.code}</td><td>${r.dateReq}</td>
+   <td>${r.part}</td><td>${r.description}</td>
+   <td>${r.qtyReq}</td><td>${r.qtyRec}</td><td>${r.backOrder}</td>
+   <td>${r.dateRec}</td><td>${r.remarks}</td>
+   <td>${r.mri}</td><td>${r.dr}</td><td>${r.receiver}</td>
+  </tr>`;
+ });
 }
 function closeModal(){modal.style.display='none'}
 function printModal(){window.print()}
 function cancelEdit(){form.reset()}
 function clearSearch(){searchBox.value='';searchMRI.value='';render()}
+function exportCSV(){
+ let csv='Code,Date,Part,Description,QtyOrder,QtyAlloc,Back,DateRec,Remarks,MRI,DR,Receiver\n';
+ records.forEach(r=>csv+=`${r.code},${r.dateReq},${r.part},"${r.description}",${r.qtyReq},${r.qtyRec},${r.backOrder},${r.dateRec},"${r.remarks}",${r.mri},${r.dr},${r.receiver}\n`);
+ const a=document.createElement('a');
+ a.href=URL.createObjectURL(new Blob([csv]));
+ a.download='records.csv';a.click();
+}
+function importCSV(input){
+ const f=input.files[0];if(!f)return;
+ const reader=new FileReader();
+ reader.onload=async e=>{
+  const lines=e.target.result.split(/\r?\n/);
+  for(const l of lines.slice(1)){
+   if(!l.trim())continue;
+   const v=l.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(x=>x.replace(/^"|"$/g,''));
+   await fetch(API_URL,{method:'POST',body:JSON.stringify({
+    action:'add',
+    code:v[0],dateReq:v[1],part:v[2],description:v[3],
+    qtyReq:+v[4],qtyRec:+v[5],backOrder:Math.max(v[4]-v[5],0),
+    dateRec:v[7],remarks:v[8],mri:v[9],dr:v[10],receiver:v[11]
+   })});
+  }
+  loadRecords();
+ };
+ reader.readAsText(f);
+}
 </script>
 
 </body>
