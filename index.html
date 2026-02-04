@@ -236,10 +236,24 @@ tbody tr:hover { background: #f1f7fc; cursor: pointer; }
     </table>
   </div>
 </div>
+const API_URL = 'https://script.google.com/macros/s/AKfycbyjs9Ejpe1g6dfud_NT4lIpGoOGhyVJ6NU1si8ALN16hmKVPrIwChPCRyCj7vOgujdF/exec';
 
-<script>
-// (JS remains exactly the same as your original updated version)
-let records = JSON.parse(localStorage.records||'[]');
+let records = [];
+
+// LOAD data from Google Sheets
+async function loadRecords() {
+  try {
+    const res = await fetch(API_URL);
+    if (!res.ok) throw new Error('Failed to load data');
+    records = await res.json();
+    render();
+  } catch (err) {
+    alert('Cannot connect to Google Sheets API');
+    console.error(err);
+  }
+}
+
+
 let editIndex = null;
 
 // login/logout
