@@ -241,7 +241,7 @@ tbody tr:hover { background: #f1f7fc; cursor: pointer; }
 
 <script>
 // Google Sheets API
-const API_URL = 'https://script.google.com/macros/s/AKfycbyjs9Ejpe1g6dfud_NT4lIpGoOGhyVJ6NU1si8ALN16hmKVPrIwChPCRyCj7vOgujdF/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbyZ29gnuidO1-gknAQ3NOvfm45WXecpdsjeC4FtArVzFDhzT7YNC_0GHgThBYpo1bOh/exec';
 
 let records = [];
 let editIndex = null;
@@ -280,10 +280,25 @@ form.onsubmit = async e=>{
    dateRec:dateRec.value,remarks:remarks.value,
    mri:mri.value,dr:dr.value,receiver:receiver.value
  };
- await fetch(API_URL,{method:'POST',body:JSON.stringify({action:'add',...r})});
- form.reset();receiver.selectedIndex=0;
+
+ if(editIndex !== null){
+   await fetch(API_URL,{
+     method:'POST',
+     body:JSON.stringify({ action:'update', index: editIndex, ...r })
+   });
+   editIndex = null;
+ } else {
+   await fetch(API_URL,{
+     method:'POST',
+     body:JSON.stringify({ action:'add', ...r })
+   });
+ }
+
+ form.reset();
+ receiver.selectedIndex=0;
  loadRecords();
 };
+
 
 qtyReq.oninput = qtyRec.oninput = ()=>backOrder.value=Math.max(+qtyReq.value-(+qtyRec.value||0),0);
 
@@ -359,9 +374,12 @@ function closeModal(){modal.style.display='none';}
 function printModal(){
  const printHeader = document.getElementById('printHeader');
  printHeader.style.display='flex';
- window.print();
- printHeader.style.display='none';
+ setTimeout(()=>{
+   window.print();
+   printHeader.style.display='none';
+ },200);
 }
+
 
 // Edit modal
 function openEditGroup(mri){
@@ -406,13 +424,18 @@ function selectRecord(index){
 
 // Delete
 function deleteAllRecords(){if(confirm('Delete ALL records?')){records=[]; render();}}
-function deleteByMRI(mri){
+async function deleteByMRI(mri){
  if(!confirm(`Delete ALL records under MRI: ${mri}?`)) return;
  const pass=prompt('Enter ADMIN password:');
  if(pass!=='1234'){alert('Invalid password');return;}
- records = records.filter(r=>r.mri!==mri); render();
-}
 
+ await fetch(API_URL,{
+   method:'POST',
+   body:JSON.stringify({ action:'deleteByMRI', mri })
+ });
+
+ loadRecords();
+}
 // CSV
 function exportCSV(){
  let csv='Code,Date,Part,Description,QtyOrder,QtyAlloc,Back,DateRec,Remarks,MRI,DR,Receiver\n';
